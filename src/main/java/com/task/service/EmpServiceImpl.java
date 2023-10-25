@@ -1,13 +1,16 @@
 package com.task.service;
-import com.task.controller.EmplController;
 import com.task.dto.mapper.EmplooyeeMapper;
 import com.task.dto.modelDto.EmployeeDto;
+import com.task.exceptions.NotFoundException;
 import com.task.model.Employee;
 import com.task.repositories.EmpRepositories;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 @Service
 public class EmpServiceImpl implements EmpService {
@@ -22,8 +25,13 @@ public class EmpServiceImpl implements EmpService {
 
 
     public EmployeeDto FindByID (Long Id){
-        return emplooyeeMapper.employeeToEmployeeDTO(empRepositories.findById(Id).get()) ;
-     }
+        Optional<Employee> EmployeeOptional = empRepositories.findById(Id);
+        if (!EmployeeOptional.isPresent()) {
+            throw new NotFoundException();
+        }
+        return emplooyeeMapper.employeeToEmployeeDTO(EmployeeOptional.get()) ;
+    }
+
     @Override
      public List<EmployeeDto> getEmployeeList(){
         return empRepositories.findAll()
@@ -36,13 +44,40 @@ public class EmpServiceImpl implements EmpService {
         return saveAndReturnDTO(emplooyeeMapper.employeeDTOToEmployee(employeeDto));
     }
 
-    @Override
-    public EmployeeDto saveEmployeeByDTO(Long id, EmployeeDto employeeDto) {
+//    @Override
+//    public EmployeeDto saveEmployeeByDTO(Long id, EmployeeDto employeeDto) {
+//        Employee employee = emplooyeeMapper.employeeDTOToEmployee(employeeDto);
+//        employee.setId(id);
+//        return saveAndReturnDTO(employee);
+//    }
+    @Transactional
+    public EmployeeDto editEmployeeByDTO(EmployeeDto employeeDto) {
         Employee employee = emplooyeeMapper.employeeDTOToEmployee(employeeDto);
-        employee.setId(id);
-        return saveAndReturnDTO(employee);
+        Long id=employee.getId();
+        String firstName=employee.getFirstName();
+        String lasttName=employee.getLastName();
+        Integer age=employee.getAge();
+
+        Employee employeeRepositre = empRepositories.findById(employee.getId()).orElseThrow(
+                () -> new IllegalStateException("############################ employee with Id " + id + " doesn't exist #################################")
+        );
+        if (firstName!=null&&firstName.length()>0&&!Objects.equals(employeeRepositre.getFirstName(),firstName)){
+            employeeRepositre.setFirstName(firstName);
+        }
+        if (lasttName!=null&&lasttName.length()>0&&!Objects.equals(employeeRepositre.getLastName(),lasttName)){
+            employeeRepositre.setLastName(lasttName);
+        }
+        if (age!=null&&age>0){
+            employeeRepositre.setAge(age);
+        }
+        return emplooyeeMapper.employeeToEmployeeDTO(employeeRepositre);
+
     }
     public void deletEmplById(Long id){
+        boolean existsById = empRepositories.existsById(id);
+        if (!existsById){
+            throw new IllegalStateException("############################ employee with Id "+id+" doesn't exist #################################");
+        }
         empRepositories.deleteById(id);
     }
     @Override

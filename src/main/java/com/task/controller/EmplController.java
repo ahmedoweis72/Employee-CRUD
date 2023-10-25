@@ -1,13 +1,10 @@
 package com.task.controller;
 import com.task.dto.modelDto.EmployeeDto;
-import com.task.model.Employee;
 import com.task.service.EmpService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
-
 @RestController
 @RequestMapping("/api/v1/employee")
 public class EmplController {
@@ -21,6 +18,7 @@ public class EmplController {
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<List<EmployeeDto>> getEmplList(){
+
         return ResponseEntity.ok(empService.getEmployeeList());
     }
 
@@ -29,10 +27,11 @@ public class EmplController {
     public EmployeeDto createNewEmployee(@RequestBody EmployeeDto employeeDto){
         return empService.createNewEmployee(employeeDto);
     }
-    @PutMapping({"/{id}"})
+//    ({"/{id}"})
+    @PutMapping
     @ResponseStatus(HttpStatus.OK)
-    public EmployeeDto updateCustomer(@PathVariable Long id, @RequestBody EmployeeDto employeeDto){
-        return empService.saveEmployeeByDTO(id, employeeDto);
+    public EmployeeDto updateEmployee(@RequestBody EmployeeDto employeeDto){
+        return empService.editEmployeeByDTO(employeeDto);
     }
     @DeleteMapping({"/{id}"})
     @ResponseStatus(HttpStatus.OK)
@@ -42,7 +41,7 @@ public class EmplController {
 
     @GetMapping({"/{id}"})
     @ResponseStatus(HttpStatus.OK)
-    public EmployeeDto findEmpByID(@PathVariable Long id){
+    public EmployeeDto findEmpByID(@PathVariable Long id,Exception exception){
         return empService.FindByID(id);
     }
     @GetMapping({"first/{firstname}"})
@@ -70,6 +69,7 @@ public class EmplController {
     public List<EmployeeDto> findEmpByFirstOrLastname(@PathVariable String name){
         return empService.findByFirstNameOrLastName(name);
     }
+
 }
 
 

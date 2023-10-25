@@ -1,6 +1,7 @@
 package com.task.bootstrap;
 import com.task.model.Employee;
 import com.task.repositories.EmpRepositories;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -10,7 +11,6 @@ import java.util.List;
 
 @Configuration
 public class BootstrapData {
-
     @Bean
    public CommandLineRunner commandLineRunner(
            EmpRepositories repositories) {
@@ -27,12 +27,7 @@ public class BootstrapData {
             Gamal.setFirstName("Taha");
             Gamal.setLastName("Gamal");
             Gamal.setAge(23);
-
-
-
-
            repositories.saveAll(List.of(Ahmed,Taha,Gamal));
-
         };
     }
 
