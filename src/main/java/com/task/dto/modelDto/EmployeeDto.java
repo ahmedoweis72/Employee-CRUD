@@ -6,12 +6,20 @@ import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 
 public class EmployeeDto {
     private Long id;
+    @NotNull
     private String firstName;
+    @NotNull
     private String lastName;
+    @Min(23)
+    @Max(60)
     private Integer age;
 
     public Long getId() {

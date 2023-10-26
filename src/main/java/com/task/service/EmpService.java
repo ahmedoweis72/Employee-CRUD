@@ -16,4 +16,5 @@ public interface EmpService {
     List<EmployeeDto> findByFirstNameAndLastName(String firstName, String lastName);
     List<EmployeeDto> findByFirstNameAndAgeLessThan(String firstName);
     List<EmployeeDto> findByFirstNameOrLastName(String name);
+
 }

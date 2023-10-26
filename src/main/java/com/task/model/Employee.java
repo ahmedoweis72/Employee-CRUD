@@ -4,6 +4,12 @@ package com.task.model;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+
 @AllArgsConstructor
 @NoArgsConstructor
 
@@ -47,9 +53,12 @@ public class Employee  {
     public void setAge(Integer age) {
         this.age = age;
     }
-
+    @NotNull
     private String firstName;
+    @NotNull
     private String lastName;
+    @Min(23)
+    @Max(60)
     private Integer age;
 
 }

@@ -1,10 +1,13 @@
 package com.task.controller;
+
 import com.task.dto.modelDto.EmployeeDto;
 import com.task.service.EmpService;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 import java.util.List;
+
 @RestController
 @RequestMapping("/api/v1/employee")
 public class EmplController {
@@ -16,59 +19,66 @@ public class EmplController {
     }
 
     @GetMapping
-    @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<List<EmployeeDto>> getEmplList(){
-
-        return ResponseEntity.ok(empService.getEmployeeList());
+    public List<EmployeeDto> getEmplList() {
+        return empService.getEmployeeList();
     }
 
     @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
-    public EmployeeDto createNewEmployee(@RequestBody EmployeeDto employeeDto){
+    public EmployeeDto createNewEmployee(@RequestBody
+                                         @Valid
+                                         @NotNull    EmployeeDto employeeDto) {
         return empService.createNewEmployee(employeeDto);
     }
-//    ({"/{id}"})
+
     @PutMapping
-    @ResponseStatus(HttpStatus.OK)
-    public EmployeeDto updateEmployee(@RequestBody EmployeeDto employeeDto){
+    public EmployeeDto updateEmployee(@RequestBody
+                                      @Valid
+                                          @NotNull    EmployeeDto employeeDto) {
         return empService.editEmployeeByDTO(employeeDto);
     }
+
     @DeleteMapping({"/{id}"})
-    @ResponseStatus(HttpStatus.OK)
-    public void deleteEmployee(@PathVariable Long id){
+    public void deleteEmployee(@PathVariable
+                               @NotNull    Long id) {
         empService.deletEmplById(id);
     }
 
     @GetMapping({"/{id}"})
-    @ResponseStatus(HttpStatus.OK)
-    public EmployeeDto findEmpByID(@PathVariable Long id,Exception exception){
+    public EmployeeDto findEmpByID(@PathVariable
+                                   @NotNull Long id) {
         return empService.FindByID(id);
     }
+
     @GetMapping({"first/{firstname}"})
-    @ResponseStatus(HttpStatus.OK)
-    public List<EmployeeDto> findEmpByFirstName(@PathVariable String firstname){
+    public List<EmployeeDto> findEmpByFirstName(@PathVariable
+                                                @NotNull String firstname) {
         return empService.findByFirstName(firstname);
     }
+
     @GetMapping({"last/{lastname}"})
-    @ResponseStatus(HttpStatus.OK)
-    public List<EmployeeDto> findEmpByLastName(@PathVariable String lastname){
+    public List<EmployeeDto> findEmpByLastName(@PathVariable
+                                               @NotNull String lastname) {
         return empService.findByLastName(lastname);
     }
+
     @GetMapping({"firstlastname/{firstname}/{lastname}"})
-    @ResponseStatus(HttpStatus.OK)
-    public List<EmployeeDto> findEmpByFirstAndLastName(@PathVariable String firstname,@PathVariable String lastname){
-        return empService.findByFirstNameAndLastName(firstname,lastname);
+    public List<EmployeeDto> findEmpByFirstAndLastName(@PathVariable @NotNull String firstname,
+                                                       @PathVariable @NotNull String lastname) {
+        return empService.findByFirstNameAndLastName(firstname, lastname);
     }
+
     @GetMapping({"firstnameandage/{firstname}"})
-    @ResponseStatus(HttpStatus.OK)
-    public List<EmployeeDto> findEmpByFirstAndAge(@PathVariable String firstname){
+    public List<EmployeeDto> findEmpByFirstAndAge(@PathVariable
+                                                  @NotNull    String firstname) {
         return empService.findByFirstNameAndAgeLessThan(firstname);
     }
+
     @GetMapping({"firstandlastname/{name}"})
-    @ResponseStatus(HttpStatus.OK)
-    public List<EmployeeDto> findEmpByFirstOrLastname(@PathVariable String name){
+    public List<EmployeeDto> findEmpByFirstOrLastname(@PathVariable
+                                                      @NotNull    String name) {
         return empService.findByFirstNameOrLastName(name);
     }
+
 
 }
 
