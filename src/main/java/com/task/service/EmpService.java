@@ -1,20 +1,21 @@
 package com.task.service;
 
 import com.task.dto.modelDto.EmployeeDto;
+import org.springframework.http.ResponseEntity;
 
 import java.util.List;
 
 public interface EmpService {
 
-    EmployeeDto FindByID (Long Id);
-    List<EmployeeDto> getEmployeeList();
-    EmployeeDto createNewEmployee(EmployeeDto employeeDto) ;
-    EmployeeDto editEmployeeByDTO(EmployeeDto employeeDto);
+    ResponseEntity<EmployeeDto> FindByID (Long Id);
+    ResponseEntity<List<EmployeeDto>>getEmployeeList();
+    ResponseEntity<EmployeeDto> createNewEmployee(EmployeeDto employeeDto) ;
+    ResponseEntity<EmployeeDto> editEmployeeByDTO(EmployeeDto employeeDto);
     void deletEmplById(Long id);
-    List<EmployeeDto> findByFirstName(String firstName);
-    List<EmployeeDto> findByLastName(String lastName);
-    List<EmployeeDto> findByFirstNameAndLastName(String firstName, String lastName);
-    List<EmployeeDto> findByFirstNameAndAgeLessThan(String firstName);
-    List<EmployeeDto> findByFirstNameOrLastName(String name);
+    ResponseEntity<List<EmployeeDto>> findByFirstName(String firstName);
+    ResponseEntity<List<EmployeeDto>> findByLastName(String lastName);
+    ResponseEntity<List<EmployeeDto>> findByFirstNameAndLastName(String firstName, String lastName);
+    ResponseEntity<List<EmployeeDto>> findByFirstNameAndAgeLessThan(String firstName);
+    ResponseEntity<List<EmployeeDto>> findByFirstNameOrLastName(String name);
 
 }

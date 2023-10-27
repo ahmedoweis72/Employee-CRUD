@@ -1,25 +1,17 @@
 package com.task.dto.modelDto;
-
-import com.fasterxml.jackson.annotation.JsonAutoDetect;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
-
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 
 
 public class EmployeeDto {
     private Long id;
-    @NotNull
+    @NotBlank(message= "Please provide a firstName")
     private String firstName;
-    @NotNull
+    @NotBlank(message= "Please provide a lastName")
     private String lastName;
     @Min(23)
-    @Max(60)
+    @Max(40)
     private Integer age;
 
     public Long getId() {

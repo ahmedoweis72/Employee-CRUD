@@ -4,23 +4,27 @@ package com.task.model;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-
 @AllArgsConstructor
 @NoArgsConstructor
-
 @Entity
+@Table
 public class Employee  {
-
-
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column
     private Long id;
+
+    @Column
+    private String firstName;
+
+    @Column
+    private String lastName;
+
+
+    @Column
+    private Integer age;
+
 
     public void setId(Long id) {
         this.id = id;
@@ -53,12 +57,5 @@ public class Employee  {
     public void setAge(Integer age) {
         this.age = age;
     }
-    @NotNull
-    private String firstName;
-    @NotNull
-    private String lastName;
-    @Min(23)
-    @Max(60)
-    private Integer age;
 
 }

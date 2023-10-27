@@ -1,18 +1,15 @@
 package com.task.service;
 import com.task.dto.mapper.EmplooyeeMapper;
 import com.task.dto.modelDto.EmployeeDto;
-import com.task.exception.NotFounException;
+import com.task.exception.ResourceNotFoundException;
 import com.task.model.Employee;
 import com.task.repositories.EmpRepositories;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.stream.Collectors;
 @Service
 public class EmpServiceImpl implements EmpService {
@@ -26,33 +23,30 @@ public class EmpServiceImpl implements EmpService {
     }
 
 
-    public EmployeeDto FindByID (Long Id){
-        Optional<Employee> EmployeeOptional = empRepositories.findById(Id);
-        if (!EmployeeOptional.isPresent()) {
-            throw new NotFounException("Not Found Id");
-        }
-        return emplooyeeMapper.employeeToEmployeeDTO(EmployeeOptional.get()) ;
+    public ResponseEntity<EmployeeDto> FindByID (Long Id){
+        Employee employee = empRepositories.findById(Id)
+                .orElseThrow(() -> new ResourceNotFoundException("Employee not found with id " + Id));
+        return ResponseEntity.ok(emplooyeeMapper.employeeToEmployeeDTO(employee));
     }
 
     @Override
-     public List<EmployeeDto> getEmployeeList(){
-        return empRepositories.findAll()
+     public ResponseEntity<List<EmployeeDto>> getEmployeeList(){
+        List<EmployeeDto> employeeDtoList = empRepositories.findAll()
                 .stream()
                 .map(emplooyeeMapper::employeeToEmployeeDTO)
                 .collect(Collectors.toList());
-     }
+       return ResponseEntity.ok(employeeDtoList);
+    }
 
-    public EmployeeDto createNewEmployee(@Valid
-                                         @NotNull EmployeeDto employeeDto) {
+    public ResponseEntity<EmployeeDto> createNewEmployee(EmployeeDto employeeDto) {
         Employee employee = emplooyeeMapper.employeeDTOToEmployee(employeeDto);
         Employee savedEmployee = empRepositories.save(employee);
         EmployeeDto returnDto = emplooyeeMapper.employeeToEmployeeDTO(savedEmployee);
-        return returnDto;
+        return ResponseEntity.ok(returnDto);
     }
 
     @Transactional
-    public EmployeeDto editEmployeeByDTO(@Valid
-                                             @NotNull    EmployeeDto employeeDto) {
+    public ResponseEntity<EmployeeDto> editEmployeeByDTO(EmployeeDto employeeDto) {
         Employee employee = emplooyeeMapper.employeeDTOToEmployee(employeeDto);
         Long id=employee.getId();
         String firstName=employee.getFirstName();
@@ -60,7 +54,7 @@ public class EmpServiceImpl implements EmpService {
         Integer age=employee.getAge();
 
         Employee employeeRepositre = empRepositories.findById(employee.getId()).orElseThrow(
-                () -> new NotFounException("Not Found Emploeyee With ID "+id)
+                () -> new ResourceNotFoundException("Not Found Emploeyee With ID "+id)
         );
         if (firstName!=null&&firstName.length()>0&&!Objects.equals(employeeRepositre.getFirstName(),firstName)){
             employeeRepositre.setFirstName(firstName);
@@ -71,53 +65,54 @@ public class EmpServiceImpl implements EmpService {
         if (age!=null&&age>0){
             employeeRepositre.setAge(age);
         }
-        return emplooyeeMapper.employeeToEmployeeDTO(employeeRepositre);
+
+        return ResponseEntity.ok(emplooyeeMapper.employeeToEmployeeDTO(employeeRepositre));
 
     }
-    public void deletEmplById(@NotNull Long id){
+    public void deletEmplById(Long id){
         boolean existsById = empRepositories.existsById(id);
         if (!existsById){
-            throw new NotFounException("Not Found Employee");
+            throw new ResourceNotFoundException("Not Found Employee");
         }
         empRepositories.deleteById(id);
     }
     @Override
-    public List<EmployeeDto> findByFirstName(@NotNull String firstName) {
-        return empRepositories.findByFirstName(firstName)
+    public ResponseEntity<List<EmployeeDto>> findByFirstName(String firstName) {
+        return ResponseEntity.ok(empRepositories.findByFirstName(firstName)
                 .stream()
                 .map(emplooyeeMapper::employeeToEmployeeDTO)
-                .collect(Collectors.toList())
-                ;
+                .collect(Collectors.toList()));
+
     }
     @Override
-    public List<EmployeeDto> findByLastName(@NotNull String lastName) {
-        return empRepositories.findByLastName(lastName)
+    public ResponseEntity<List<EmployeeDto>> findByLastName( String lastName) {
+        return ResponseEntity.ok(empRepositories.findByLastName(lastName)
                 .stream()
                 .map(emplooyeeMapper::employeeToEmployeeDTO)
-                .collect(Collectors.toList());
+                .collect(Collectors.toList()));
     }
 
     @Override
-    public List<EmployeeDto> findByFirstNameAndLastName(@NotNull String firstName,@NotNull String lastName) {
-        return empRepositories.findByFirstNameAndLastName(firstName, lastName)
+    public ResponseEntity<List<EmployeeDto>> findByFirstNameAndLastName( String firstName, String lastName) {
+        return ResponseEntity.ok(empRepositories.findByFirstNameAndLastName(firstName, lastName)
                 .stream()
                 .map(emplooyeeMapper::employeeToEmployeeDTO)
-                .collect(Collectors.toList());
+                .collect(Collectors.toList()));
     }
 
     @Override
-    public List<EmployeeDto> findByFirstNameAndAgeLessThan(@NotNull String firstName) {
-        return empRepositories.findAllByFirstNameAndAgeLessThan(firstName,30)
+    public ResponseEntity<List<EmployeeDto>> findByFirstNameAndAgeLessThan( String firstName) {
+         return ResponseEntity.ok( empRepositories.findAllByFirstNameAndAgeLessThan(firstName,30)
                 .stream()
-                .map(emplooyeeMapper::employeeToEmployeeDTO).collect(Collectors.toList());
+                .map(emplooyeeMapper::employeeToEmployeeDTO).collect(Collectors.toList()));
 
     }
 
     @Override
-    public List<EmployeeDto> findByFirstNameOrLastName(@NotNull String name) {
-        return empRepositories.findByFirstNameOrLastName(name,name)
+    public ResponseEntity<List<EmployeeDto>> findByFirstNameOrLastName(String name) {
+        return ResponseEntity.ok( empRepositories.findByFirstNameOrLastName(name,name)
                 .stream()
-                .map(emplooyeeMapper::employeeToEmployeeDTO).collect(Collectors.toList());
+                .map(emplooyeeMapper::employeeToEmployeeDTO).collect(Collectors.toList()));
 
     }
 
