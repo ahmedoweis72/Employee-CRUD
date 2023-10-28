@@ -11,8 +11,6 @@ import java.util.List;
 @Mapper
 public interface EmplooyeeMapper {
     EmplooyeeMapper INSTANCE = Mappers.getMapper(EmplooyeeMapper.class);
-
-    @Mapping(source = "id",target = "id")
     EmployeeDto employeeToEmployeeDTO(Employee employee);
     Employee employeeDTOToEmployee(EmployeeDto employeeDto);
 
