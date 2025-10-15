@@ -1,14 +1,19 @@
-package com.task.service;
-import com.task.dto.mapper.EmplooyeeMapper;
-import com.task.dto.modelDto.EmployeeDto;
-import com.task.exception.ResourceNotFoundException;
-import com.task.model.Employee;
-import com.task.repositories.EmpRepositories;
+package com.demo.service;
+import com.demo.dto.mapper.EmplooyeeMapper;
+import com.demo.dto.modelDto.EmployeeDto;
+import com.demo.exception.ResourceNotFoundException;
+import com.demo.model.Employee;
+import com.demo.repositories.EmpRepositories;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 @Service
@@ -114,6 +119,63 @@ public class EmpServiceImpl implements EmpService {
                 .stream()
                 .map(emplooyeeMapper::employeeToEmployeeDTO).collect(Collectors.toList()));
 
+    }
+
+
+    @Override
+    public ResponseEntity<List<EmployeeDto>> getEmployeesByPage(int page, int size, String sortBy, String direction) {
+        // Create a Pageable object using page number, page size, and sort direction
+        Sort sort = direction.equalsIgnoreCase("desc") ?
+                Sort.by(sortBy).descending() :
+                Sort.by(sortBy).ascending();
+
+        Pageable pageable = PageRequest.of(page, size, sort);
+
+        // Retrieve paginated data
+        Page<Employee> employeePage = empRepositories.findAll(pageable);
+
+        // Convert to DTOs
+        List<EmployeeDto> employeeDtos = employeePage.getContent().stream()
+                .map(emplooyeeMapper::employeeToEmployeeDTO)
+                .collect(Collectors.toList());
+
+        // Return response with pagination metadata
+        return ResponseEntity.ok()
+                .header("X-Total-Count", String.valueOf(employeePage.getTotalElements()))
+                .header("X-Total-Pages", String.valueOf(employeePage.getTotalPages()))
+                .body(employeeDtos);
+    }
+
+
+    @Override
+    public ResponseEntity<List<EmployeeDto>> searchEmployees(String name, String department, Integer minAge, Integer maxAge) {
+        return (ResponseEntity<List<EmployeeDto>>) empRepositories.searchEmployees(name,department,minAge,maxAge);
+    }
+
+    @Override
+    public ResponseEntity<List<EmployeeDto>> getEmployeesByDepartment(Long departmentId) {
+        return (ResponseEntity<List<EmployeeDto>>) empRepositories.findByDepartmentId(departmentId);
+    }
+
+    @Override
+    public ResponseEntity<EmployeeDto> updateEmployeeStatus(Long id, boolean active) {
+
+        return  null;
+    }
+
+    @Override
+    public ResponseEntity<List<EmployeeDto>> getEmployeesCreatedBetween(String startDate, String endDate) {
+        return null;
+    }
+
+    @Override
+    public ResponseEntity<Map<String, Object>> getAgeStatistics() {
+        return null;
+    }
+
+    @Override
+    public ResponseEntity<Map<String, Long>> getEmployeeCountByDepartment() {
+        return null;
     }
 
 

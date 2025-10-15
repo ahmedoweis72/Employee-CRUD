@@ -1,4 +1,4 @@
-package com.task.dto.modelDto;
+package com.demo.dto.modelDto;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;

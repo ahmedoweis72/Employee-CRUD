@@ -1,12 +1,9 @@
-package com.task.dto.mapper;
+package com.demo.dto.mapper;
 
-import com.task.dto.modelDto.EmployeeDto;
-import com.task.model.Employee;
+import com.demo.dto.modelDto.EmployeeDto;
+import com.demo.model.Employee;
 import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
-
-import java.util.List;
 
 @Mapper(componentModel = "spring")
 public interface EmplooyeeMapper {

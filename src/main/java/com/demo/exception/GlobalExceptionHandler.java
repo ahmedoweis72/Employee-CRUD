@@ -1,8 +1,9 @@
-package com.task.exception;
+package com.demo.exception;
 
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -14,6 +15,8 @@ import java.util.stream.Collectors;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
+
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Map<String, List<String>>> handleValidationErrors(MethodArgumentNotValidException ex) {
         List<String> errors = ex.getBindingResult().getFieldErrors()
@@ -27,10 +30,17 @@ public class GlobalExceptionHandler {
         return errorResponse;
     }
     @ExceptionHandler(ResourceNotFoundException.class)
-    public ResponseEntity<Object> handleResourceNotFoundException(ResourceNotFoundException ex) {
+    public ResponseEntity<EmployeeErrorResponse> handleResourceNotFoundException(ResourceNotFoundException ex) {
+//        Map<String, Object> body = new HashMap<>();
+//        body.put("message", ex.getMessage());
+        return new ResponseEntity<>(new EmployeeErrorResponse("message"+ ex.getMessage(),HttpStatus.NOT_FOUND.value(),System.currentTimeMillis()), HttpStatus.NOT_FOUND);
+    }
+    @ExceptionHandler(BadCredentialsException.class)
+    public ResponseEntity<Map<String, Object>> handleBadCredentials(BadCredentialsException ex) {
         Map<String, Object> body = new HashMap<>();
-        body.put("message", ex.getMessage());
-        return new ResponseEntity<>(body, HttpStatus.NOT_FOUND);
+        body.put("error", "Unauthorized");
+        body.put("message", "Invalid username or password");
+        return new ResponseEntity<>(body, HttpStatus.UNAUTHORIZED);
     }
 
 }
